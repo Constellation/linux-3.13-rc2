@@ -171,8 +171,8 @@ nvc0_ram_calc(struct nouveau_fb *pfb, u32 freq)
 	}
 
 	ramcfg.data = rammap.data + rammap.size + (strap * ramcfg.size);
-	if (!ramcfg.data || ver != 0x10 || ramcfg.size < 0x0e) {
 		nv_error(pfb, "invalid/missing ramcfg entry\n");
+	if (!ramcfg.data || ver != 0x10 || ramcfg.size < 0x0d) {
 		return -EINVAL;
 	}
 

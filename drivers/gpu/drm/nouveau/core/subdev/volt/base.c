@@ -88,6 +88,15 @@ static int
 nouveau_volt_set_id(struct nouveau_volt *volt, u8 id, int condition)
 {
 	int ret = nouveau_volt_map(volt, id);
+
+	/* Adjust for slided voltage record on BIOS */
+	if (volt->step_uv && volt->step_ofs) {
+		if (ret % volt->step_uv != volt->step_ofs) {
+			ret -= ret % volt->step_uv;
+			ret += volt->step_ofs;
+		}
+	}
+
 	if (ret >= 0) {
 		int prev = nouveau_volt_get(volt);
 		if (!condition || prev < 0 ||
@@ -164,6 +173,9 @@ nouveau_volt_create_(struct nouveau_object *parent,
 			info.base += info.step;
 		}
 		volt->vid_mask = info.vidmask;
+		volt->step_uv = info.step >= 0 ? info.step : -info.step;
+		if (info.step)
+			volt->step_ofs = info.base % volt->step_uv;
 	} else
 	if (data && info.vidmask) {
 		for (i = 0; i < cnt; i++) {

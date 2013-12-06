@@ -20,6 +20,8 @@ struct nouveau_volt {
 
 	u8 vid_mask;
 	u8 vid_nr;
+	u16 step_uv;
+	u16 step_ofs;
 	struct {
 		u32 uv;
 		u8 vid;
